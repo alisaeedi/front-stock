@@ -1,0 +1,47 @@
+<mat-tab-group mat-align-tabs="center">
+  <mat-tab label="روزانه">
+    <mat-card>
+      <highcharts-chart [Highcharts]="priceDailyLineChart" [options]="priceDailyLineChartOptions"></highcharts-chart>
+      <div class="divider"></div>
+      <highcharts-chart [Highcharts]="powerDailyLineChart" [options]="powerDailyLineChartOptions"></highcharts-chart>
+      <div class="divider"></div>
+      <highcharts-chart [Highcharts]="scoreDailyLineChart" [options]="scoreDailyLineChartOptions"></highcharts-chart>
+    </mat-card>
+  </mat-tab>
+  <mat-tab label="هفتگی">
+    <mat-card>
+      <highcharts-chart [Highcharts]="priceWeeklyLineChart" [options]="priceWeeklyLineChartOptions"></highcharts-chart>
+      <div class="divider"></div>
+      <highcharts-chart [Highcharts]="powerWeeklyLineChart" [options]="powerWeeklyLineChartOptions"></highcharts-chart>
+      <div class="divider"></div>
+      <highcharts-chart [Highcharts]="scoreWeeklyLineChart" [options]="scoreWeeklyLineChartOptions"></highcharts-chart>
+    </mat-card>
+  </mat-tab>
+  <mat-tab label="ماهانه">
+    <mat-card>
+      <highcharts-chart [Highcharts]="priceMonthlyLineChart" [options]="priceMonthlyLineChartOptions"></highcharts-chart>
+      <div class="divider"></div>
+      <highcharts-chart [Highcharts]="powerMonthlyLineChart" [options]="powerMonthlyLineChartOptions"></highcharts-chart>
+      <div class="divider"></div>
+      <highcharts-chart [Highcharts]="scoreMonthlyLineChart" [options]="scoreMonthlyLineChartOptions"></highcharts-chart>
+    </mat-card>
+  </mat-tab>
+  <mat-tab label="سه ماهه">
+    <mat-card>
+      <highcharts-chart [Highcharts]="priceThreeMonthlyLineChart" [options]="priceThreeMonthlyLineChartOptions"></highcharts-chart>
+      <div class="divider"></div>
+      <highcharts-chart [Highcharts]="powerThreeMonthlyLineChart" [options]="powerThreeMonthlyLineChartOptions"></highcharts-chart>
+      <div class="divider"></div>
+      <highcharts-chart [Highcharts]="scoreThreeMonthlyLineChart" [options]="scoreThreeMonthlyLineChartOptions"></highcharts-chart>
+    </mat-card>
+  </mat-tab>
+  <mat-tab label="سالانه">
+    <mat-card>
+      <highcharts-chart [Highcharts]="priceYearlyLineChart" [options]="priceYearlyLineChartOptions"></highcharts-chart>
+      <div class="divider"></div>
+      <highcharts-chart [Highcharts]="powerYearlyLineChart" [options]="powerYearlyLineChartOptions"></highcharts-chart>
+      <div class="divider"></div>
+      <highcharts-chart [Highcharts]="scoreYearlyLineChart" [options]="scoreYearlyLineChartOptions"></highcharts-chart>
+    </mat-card>
+  </mat-tab>
+</mat-tab-group>

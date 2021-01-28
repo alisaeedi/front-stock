@@ -1,0 +1,224 @@
+::ng-deep .mat-paginator .mat-paginator-container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+::ng-deep .mat-paginator .mat-paginator-range-label{
+  direction: ltr;
+  display: flex;
+  flex : 1 1 auto;
+  justify-content: center;
+}
+
+::ng-deep .mat-paginator .mat-paginator-range-actions{
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media screen and (min-width: 961px) {
+
+  .responsive-table-container{
+    display: none;
+  }
+
+  .table-container{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container{
+    margin: 0 50px 30px 50px;
+  }
+
+  .table-container .filter{
+    padding: 5px 20px;
+    display: flex;
+    background-color: white;
+    /*margin: 30px 50px 0 50px;*/
+    border-collapse: separate;
+    border-color: grey;
+    border-bottom: none;
+  }
+
+  .table-container .signal-type-container{
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .table-container .signal-type-container .mat-checkbox {
+    margin: 10px;
+  }
+
+  .table-container .filter mat-form-field{
+    flex: 1 1 auto;
+  }
+
+  .table-container table {
+    width: 100%;
+  }
+
+  .table-container .mat-cell{
+    padding: 0 !important;
+    margin: 5px;
+  }
+
+  .table-container .mat-header-cell{
+    padding: 0 !important;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 1px;
+    color: #633AB7;
+  }
+
+  .table-container .bl{
+    border-left: 1px solid #CCC;
+  }
+
+  .table-container td{
+    text-align: center;
+  }
+
+  .table-container .first-header-row{
+    border-left: 1px solid #CCC;
+  }
+
+  .table-container ::ng-deep .mat-sort-header-container{
+    display: flex;
+    justify-content: center;
+  }
+
+  .table-container ::ng-deep .mat-sort-header-content{
+    display: block;
+  }
+
+  .table-container tr:nth-child(odd){
+    background-color: #fafafa;
+  }
+
+  ::ng-deep .mat-paginator .mat-paginator-outer-contain{
+   margin: 0 20px;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .responsive-table-container{
+    display: block;
+  }
+
+  .table-container{
+    display: none;
+  }
+
+  .responsive-table-container .filter{
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #CCC;
+    padding: 10px;
+  }
+  .responsive-table-container .signal-type-container{
+    display: flex;
+    justify-content: center;
+    margin: 0 10px;
+  }
+
+  .responsive-table-container .signal-type-container .mat-checkbox{
+    margin: 0 10px;
+  }
+
+  .responsive-table-container .mat-header-row{
+    display: none;
+  }
+  .responsive-table-container .mat-table {
+    border: 0;
+    vertical-align: middle
+  }
+
+  .responsive-table-container .mat-table caption {
+    font-size: 1em;
+  }
+
+    /*Enable this to hide header*/
+  .responsive-table-container .mat-table .mat-header-cell {
+    border: 10px solid;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  .responsive-table-container .mat-table .mat-row {
+    border-bottom: 5px solid #ddd;
+    display: block;
+    height: 890px;
+  }
+
+  /*.mat-table .mat-row:nth-child(even) {background: #CCC}*/
+  /*.mat-table .mat-row:nth-child(odd) {background: #FFF}*/
+
+  .responsive-table-container .mat-table .mat-cell {
+    color: #633AB7;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    text-align: left;
+    font-weight: bold;
+    height:10px;
+    padding: 0 10px;
+    /*margin-bottom: 4%;*/
+  }
+
+  .responsive-table-container .mat-table .mat-cell span{
+    color: black;
+  }
+
+  .responsive-table-container .mat-table .mat-cell .hover{
+    color: black;
+  }
+
+  .responsive-table-container .mat-table .mat-cell:before {
+    /*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+    content: attr(data-label);
+    float: right;
+    text-transform: uppercase;
+    font-weight: bolder;
+    font-size: 16px;
+  }
+  .responsive-table-container .mat-table .mat-cell:last-child {
+    border-bottom: 0;
+  }
+  .responsive-table-container .mat-table .mat-cell:first-child {
+    margin-top: 0;
+  }
+
+  .responsive-table-container .tools{
+    background-color: white;
+    padding: 0 10px 0 10px;
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*padding: 5px 20px;*/
+    border-bottom: 1px solid grey;
+  }
+
+  .responsive-table-container .tools .sort{
+    display: flex;
+  }
+
+  .responsive-table-container .tools .sort-dir{
+    display: flex;
+    flex-direction: column;
+    margin-top: 3px;
+  }
+  .responsive-table-container .tools .mat-form-field{
+    width: 100%;
+  }
+}

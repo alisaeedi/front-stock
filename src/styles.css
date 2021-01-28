@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: Yekan;
+  src: url('assets/fonts/yekan.eot');
+  src: url('assets/fonts/yekanie.eot') format('embedded-opentype'),
+  url('assets/fonts/yekan.woff') format('woff'),
+  url('assets/fonts/yekan.ttf') format('truetype');
+  font-weight: normal;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  font-family: Yekan, "Helvetica Neue", sans-serif;
+}
+
+.text-center{
+  text-align: center;
+}
+
+html, body { height: 100%; }
+body {
+        margin: 0;
+        font-family: Roboto, "Helvetica Neue", sans-serif;
+        background-color: aliceblue
+}
+
+a.hover:hover{
+  cursor: pointer;
+}
+
+a.hover{
+  text-decoration: underline;
+}
+
+.hr-center{
+  display: flex;
+  justify-content: center;
+}
+
+
