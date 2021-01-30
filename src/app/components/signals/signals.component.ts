@@ -2,7 +2,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {ColumnElement} from '../../interfaces/ColumnElement';
 import {MatPaginator} from '@angular/material/paginator';
-import {MatSort, Sort} from '@angular/material/sort';
+import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {SignalElement} from '../../interfaces/SignalElement';
 import {SignalsService} from '../../services/signals.service';
@@ -14,14 +14,47 @@ import {SignalsService} from '../../services/signals.service';
 })
 export class SignalsComponent implements OnInit, AfterViewInit {
   dataSource: any;
+  signalElements: SignalElement[] = [];
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
   lastSortColumn: string | undefined;
   constructor(private router: Router, private signals: SignalsService) {
-    signals.messages.subscribe((msg) => {
-      console.log(msg);
+    signals.messages.subscribe((signalElements: SignalElement[]) => {
+      signalElements.forEach((s) => {
+        this.signalElements.push(s);
+      });
+      this.dataSource.data = this.signalElements;
     });
-    this.dataSource = new MatTableDataSource<SignalElement>(this.testData());
+    this.dataSource = new MatTableDataSource<SignalElement>(this.signalElements);
+    this.dataSource.filterPredicate = (dt: SignalElement, filter: string): boolean => {
+      if (this.inputFilter.trim().toLowerCase() === '') {
+        return (dt.signal_type === 'vip' && this.vipSignal) || (dt.signal_type === 'strong' && this.strongSignal) || (dt.signal_type === 'super' && this.superSignal);
+      } else {
+        const res1 = dt.recent_power.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.recent_per_purchase_cost.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.recent_number_purchases.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.now_power.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.now_per_purchase_cost.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.now_number_purchases.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.board_power.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.board_per_purchase_cost.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.board_number_purchases.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.opening_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.trade_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.final_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.high_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.low_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.time.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || dt.company.toString().trim().toLowerCase().includes(filter.trim().toLowerCase());
+        if (dt.signal_type === 'vip'){
+          return res1 && this.vipSignal;
+        } else if (dt.signal_type === 'strong'){
+          return res1 && this.strongSignal;
+        } else {
+          return res1 && this.superSignal;
+        }
+      }
+    };
     this.lastSortColumn = undefined;
     this.inputFilter = '';
   }
@@ -55,12 +88,11 @@ export class SignalsComponent implements OnInit, AfterViewInit {
     for (const col of this.cols){
       this.displayedColumns.push(col.eng);
     }
-    this.testData();
+    // this.testData();
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    this.filterBySignalType('super');
+    this.filterBySignalType();
   }
-
   ngAfterViewInit(): void {
     if (this.paginator !== undefined){
       this.paginator._intl.itemsPerPageLabel = 'تداد سطرهای هر صفحه';
@@ -70,42 +102,9 @@ export class SignalsComponent implements OnInit, AfterViewInit {
     }
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    this.dataSource.filterPredicate = (dt: SignalElement, filter: string): boolean => {
-      console.log(filter);
-      if (this.inputFilter.trim().toLowerCase() === '') {
-        return (dt.signal_type === 'vip' && this.vipSignal) || (dt.signal_type === 'strong' && this.strongSignal) || (dt.signal_type === 'super' && this.superSignal)
-      } else {
-        const res1 = dt.recent_power.trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.recent_per_purchase_cost.trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.recent_number_purchases.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.now_power.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.now_per_purchase_cost.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.now_number_purchases.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.board_power.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.board_per_purchase_cost.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.board_number_purchases.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.opening_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.trade_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.final_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.high_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.low_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.time.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
-          || dt.company.toString().trim().toLowerCase().includes(filter.trim().toLowerCase());
-        if (dt.signal_type === 'vip'){
-          return res1 && this.vipSignal;
-        } else if (dt.signal_type === 'strong'){
-          return res1 && this.strongSignal;
-        } else {
-          return res1 && this.superSignal;
-        }
-      }
-    };
   }
-
-
   goToDetailsPage(element: any): void {
     this.router.navigate(['signal-details']);
-
   }
 
   private testData(): Array<SignalElement>{
@@ -188,7 +187,6 @@ export class SignalsComponent implements OnInit, AfterViewInit {
       this.dataSource.filter = 'super';
     }
   }
-
   orderData(id: string | undefined, start?: 'asc' | 'desc'): void {
     if (id === undefined){
       return;
@@ -206,8 +204,7 @@ export class SignalsComponent implements OnInit, AfterViewInit {
 
     this.dataSource.sort = matSort;
   }
-
-  filterBySignalType(signalType: string): void {
+  filterBySignalType(): void {
     if (!this.vipSignal && !this.strongSignal && !this.superSignal){
       this.superSignal = true;
     }

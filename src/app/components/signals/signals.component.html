@@ -7,9 +7,9 @@
       <input matInput [(ngModel)]="inputFilter" (keyup)="filterByInput($event)" placeholder="جستجو کنید ..." #input>
     </mat-form-field>
     <div class="signal-type-container">
-      <mat-checkbox [(ngModel)]="vipSignal" (change)="filterBySignalType('vip')">VIP</mat-checkbox>
-      <mat-checkbox [(ngModel)]="strongSignal" (change)="filterBySignalType('strong')">Strong</mat-checkbox>
-      <mat-checkbox [disabled]="!this.strongSignal && !this.vipSignal" [(ngModel)]="superSignal"(change)="filterBySignalType('super')">Super</mat-checkbox>
+      <mat-checkbox [(ngModel)]="vipSignal" (change)="filterBySignalType()">VIP</mat-checkbox>
+      <mat-checkbox [(ngModel)]="strongSignal" (change)="filterBySignalType()">Strong</mat-checkbox>
+      <mat-checkbox [disabled]="!this.strongSignal && !this.vipSignal" [(ngModel)]="superSignal"(change)="filterBySignalType()">Super</mat-checkbox>
     </div>
   </div>
 
@@ -101,9 +101,9 @@
           <input matInput [(ngModel)]="inputFilter"  (keyup)="filterByInput($event)" placeholder="جستجو کنید ..." #input>
         </mat-form-field>
         <div class="signal-type-container">
-          <mat-checkbox [(ngModel)]="vipSignal" (change)="filterBySignalType('vip')">VIP</mat-checkbox>
-          <mat-checkbox [(ngModel)]="strongSignal" (change)="filterBySignalType('strong')">Strong</mat-checkbox>
-          <mat-checkbox [disabled]="!this.strongSignal && !this.vipSignal" [(ngModel)]="superSignal"(change)="filterBySignalType('super')">Super</mat-checkbox>
+          <mat-checkbox [(ngModel)]="vipSignal" (change)="filterBySignalType()">VIP</mat-checkbox>
+          <mat-checkbox [(ngModel)]="strongSignal" (change)="filterBySignalType()">Strong</mat-checkbox>
+          <mat-checkbox [disabled]="!this.strongSignal && !this.vipSignal" [(ngModel)]="superSignal"(change)="filterBySignalType()">Super</mat-checkbox>
         </div>
       </div>
 

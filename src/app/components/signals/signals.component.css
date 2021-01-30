@@ -17,6 +17,9 @@
   justify-content: flex-end;
 }
 
+td{
+  direction: ltr;
+}
 @media screen and (min-width: 961px) {
 
   .responsive-table-container{
