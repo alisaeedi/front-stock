@@ -29,7 +29,7 @@ export class SignalDetailsComponent implements OnInit {
     },
     series: [
       {
-        name: 'ثیمت',
+        name: 'قیمت',
         type: 'line',
         data: [10, 5, 8, 15, 7],
         color: 'orange'
@@ -69,7 +69,7 @@ export class SignalDetailsComponent implements OnInit {
     },
     series: [
       {
-        name: 'ثیمت',
+        name: 'قیمت',
         type: 'line',
         data: [10, 5, 8, 15, 7],
         color: 'orange'
@@ -109,7 +109,7 @@ export class SignalDetailsComponent implements OnInit {
     },
     series: [
       {
-        name: 'ثیمت',
+        name: 'قیمت',
         type: 'line',
         data: [10, 5, 8, 15, 7],
         color: 'orange'
@@ -149,7 +149,7 @@ export class SignalDetailsComponent implements OnInit {
     },
     series: [
       {
-        name: 'ثیمت',
+        name: 'قیمت',
         type: 'line',
         data: [10, 5, 8, 15, 7],
         color: 'orange'

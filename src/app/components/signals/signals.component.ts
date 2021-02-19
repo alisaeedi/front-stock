@@ -6,6 +6,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {SignalElement} from '../../interfaces/SignalElement';
 import {SignalsService} from '../../services/signals.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-signals',
@@ -15,16 +16,54 @@ import {SignalsService} from '../../services/signals.service';
 export class SignalsComponent implements OnInit, AfterViewInit {
   dataSource: any;
   signalElements: SignalElement[] = [];
+  lastRequestedStocksInfoTime = '';
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
   lastSortColumn: string | undefined;
+
   constructor(private router: Router, private signals: SignalsService) {
-    signals.messages.subscribe((signalElements: SignalElement[]) => {
-      signalElements.forEach((s) => {
-        this.signalElements.push(s);
-      });
-      this.dataSource.data = this.signalElements;
-    });
+    setInterval(() => {
+      const date = new Date();
+      const formatData = (moment(date)).format('YYYY-MM-DD HH:mm:ss');
+      if (this.lastRequestedStocksInfoTime === '') {
+        this.lastRequestedStocksInfoTime = (moment(date)).format('YYYY-MM-DD') + ' 00:00:00';
+      }
+      signals.getStocksInfo(this.lastRequestedStocksInfoTime, formatData, '-1', ['SUPER', 'STRONG', 'VIP'])
+        .subscribe((signalElements: any[]) => {
+          signalElements.forEach((s) => {
+            const tmpS: SignalElement = {
+              signal_type: s.score_level.toLowerCase(),
+              company: s.name,
+              score: s.score.toFixed(1),
+              trade_price: s.board_buy_sell_status.board_trade_price_in_percent,
+              final_price: s.board_buy_sell_status.board_final_price_in_percent,
+              low_price: s.board_buy_sell_status.board_min_day_touched_in_percent,
+              high_price: s.board_buy_sell_status.board_max_day_touched_in_percent,
+              opening_price: s.board_buy_sell_status.board_first_trade_in_percent,
+              now_power: s['30s_buy_sell_status']['30s_get_human_buy_ratio_power'].toFixed(1),
+              now_per_purchase_cost: s['30s_buy_sell_status']['30s_get_average_buy_per_code_in_million_base'],
+              now_number_purchases: s['30s_buy_sell_status']['30s_human_buy_count'],
+              recent_power: s['5m_buy_sell_status']['5m_get_human_buy_ratio_power'].toFixed(1),
+              recent_per_purchase_cost: s['5m_buy_sell_status']['5m_get_average_buy_per_code_in_million_base'],
+              recent_number_purchases: s['5m_buy_sell_status']['5m_human_buy_count'],
+              board_power: s.board_buy_sell_status.board_get_human_buy_ratio_power.toFixed(1),
+              board_per_purchase_cost: s.board_buy_sell_status.board_get_average_buy_per_code_in_million_base,
+              board_number_purchases: s.board_buy_sell_status.board_human_buy_count,
+              url: '',
+              time: (moment(date)).format('HH:mm:ss')
+            };
+            this.signalElements.push(tmpS);
+          });
+          this.dataSource.data = this.signalElements;
+          this.lastRequestedStocksInfoTime = formatData;
+        });
+    }, 5000);
+    // signals.messages.subscribe((signalElements: SignalElement[]) => {
+    //   signalElements.forEach((s) => {
+    //     this.signalElements.push(s);
+    //   });
+    //   this.dataSource.data = this.signalElements;
+    // });
     this.dataSource = new MatTableDataSource<SignalElement>(this.signalElements);
     this.dataSource.filterPredicate = (dt: SignalElement, filter: string): boolean => {
       if (this.inputFilter.trim().toLowerCase() === '') {
@@ -46,9 +85,9 @@ export class SignalsComponent implements OnInit, AfterViewInit {
           || dt.low_price.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
           || dt.time.toString().trim().toLowerCase().includes(filter.trim().toLowerCase())
           || dt.company.toString().trim().toLowerCase().includes(filter.trim().toLowerCase());
-        if (dt.signal_type === 'vip'){
+        if (dt.signal_type === 'vip') {
           return res1 && this.vipSignal;
-        } else if (dt.signal_type === 'strong'){
+        } else if (dt.signal_type === 'strong') {
           return res1 && this.strongSignal;
         } else {
           return res1 && this.superSignal;
@@ -58,25 +97,26 @@ export class SignalsComponent implements OnInit, AfterViewInit {
     this.lastSortColumn = undefined;
     this.inputFilter = '';
   }
+
   cols: ColumnElement[] = [
-      {eng: 'company', fa: 'نماد', fa_rep: 'نماد'},
-      {eng: 'board_power', fa: 'قدرت', fa_rep: 'قدرت خریدار حقیقی روی تابلو'},
-      {eng: 'board_per_purchase_cost', fa: 'سرانه خرید', fa_rep: 'سرانه خرید حقیقی روی تابلو'},
-      {eng: 'board_number_purchases', fa: 'تعداد خریدار',  fa_rep: 'تعداد خریدار حقیقی روی تابلو'},
-      {eng: 'trade_price', fa: ' معامله',  fa_rep: 'قیمت معامله'},
-      {eng: 'final_price', fa: 'پایانی',  fa_rep: 'قیمت پایانی'},
-      {eng: 'opening_price', fa: 'بازگشایی',  fa_rep: 'قیمت بازگشایی'},
-      {eng: 'low_price', fa: 'کف',  fa_rep: 'کف قیمت لمس شده امروز'},
-      {eng: 'high_price', fa: 'سقف', fa_rep: 'سقف قیمت لمس شده امروز'},
-      {eng: 'recent_power', fa: 'قدرت', fa_rep: 'قدرت خریدار حقیقی در 5 دقیقه اخیر'},
-      {eng: 'recent_per_purchase_cost', fa: 'سرانه', fa_rep: 'سرانه خرید حقیقی در 5 دقیقه اخیر'},
-      {eng: 'recent_number_purchases', fa: 'تعداد', fa_rep: 'تعداد خریداران حقیقی در 5 دقیقه اخیر'},
-      {eng: 'now_power', fa: 'قدرت', fa_rep: 'قدرت خریدار حقیقی در 30 ثانیه اخیر'},
-      {eng: 'now_per_purchase_cost', fa: 'سرانه', fa_rep: 'سرانه خرید حقیقی در 30 ثانیه اخیر'},
-      {eng: 'now_number_purchases', fa: 'تعداد', fa_rep: 'تعداد خریداران حقیقی در 30 ثانیه اخیر'},
-      {eng: 'time', fa: 'زمان', fa_rep: 'زمان'},
-      {eng: 'signal_type', fa: 'سیگنال', fa_rep: 'نوع سیگنال'},
-      {eng: 'score', fa: 'امتیاز', fa_rep: 'امتیاز'},
+    {eng: 'company', fa: 'نماد', fa_rep: 'نماد'},
+    {eng: 'board_power', fa: 'قدرت', fa_rep: 'قدرت خریدار حقیقی روی تابلو'},
+    {eng: 'board_per_purchase_cost', fa: 'سرانه خرید', fa_rep: 'سرانه خرید حقیقی روی تابلو'},
+    {eng: 'board_number_purchases', fa: 'تعداد خریدار', fa_rep: 'تعداد خریدار حقیقی روی تابلو'},
+    {eng: 'trade_price', fa: ' معامله', fa_rep: 'قیمت معامله'},
+    {eng: 'final_price', fa: 'پایانی', fa_rep: 'قیمت پایانی'},
+    {eng: 'opening_price', fa: 'بازگشایی', fa_rep: 'قیمت بازگشایی'},
+    {eng: 'low_price', fa: 'کف', fa_rep: 'کف قیمت لمس شده امروز'},
+    {eng: 'high_price', fa: 'سقف', fa_rep: 'سقف قیمت لمس شده امروز'},
+    {eng: 'recent_power', fa: 'قدرت', fa_rep: 'قدرت خریدار حقیقی در 5 دقیقه اخیر'},
+    {eng: 'recent_per_purchase_cost', fa: 'سرانه', fa_rep: 'سرانه خرید حقیقی در 5 دقیقه اخیر'},
+    {eng: 'recent_number_purchases', fa: 'تعداد', fa_rep: 'تعداد خریداران حقیقی در 5 دقیقه اخیر'},
+    {eng: 'now_power', fa: 'قدرت', fa_rep: 'قدرت خریدار حقیقی در 30 ثانیه اخیر'},
+    {eng: 'now_per_purchase_cost', fa: 'سرانه', fa_rep: 'سرانه خرید حقیقی در 30 ثانیه اخیر'},
+    {eng: 'now_number_purchases', fa: 'تعداد', fa_rep: 'تعداد خریداران حقیقی در 30 ثانیه اخیر'},
+    {eng: 'time', fa: 'زمان', fa_rep: 'زمان'},
+    {eng: 'signal_type', fa: 'سیگنال', fa_rep: 'نوع سیگنال'},
+    {eng: 'score', fa: 'امتیاز', fa_rep: 'امتیاز'},
   ];
   displayedColumns: string[] = [];
   vipSignal = false;
@@ -85,7 +125,7 @@ export class SignalsComponent implements OnInit, AfterViewInit {
   inputFilter: string;
 
   ngOnInit(): void {
-    for (const col of this.cols){
+    for (const col of this.cols) {
       this.displayedColumns.push(col.eng);
     }
     // this.testData();
@@ -93,8 +133,9 @@ export class SignalsComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
     this.filterBySignalType();
   }
+
   ngAfterViewInit(): void {
-    if (this.paginator !== undefined){
+    if (this.paginator !== undefined) {
       this.paginator._intl.itemsPerPageLabel = 'تداد سطرهای هر صفحه';
       this.paginator._intl.nextPageLabel = 'صفحه بعد';
       this.paginator._intl.previousPageLabel = 'صفحه قبل';
@@ -103,13 +144,14 @@ export class SignalsComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
+
   goToDetailsPage(element: any): void {
     this.router.navigate(['signal-details']);
   }
 
-  private testData(): Array<SignalElement>{
+  private testData(): Array<SignalElement> {
     const array: Array<SignalElement> = new Array<SignalElement>();
-    for (let i = 0; i < 1; ++i){
+    for (let i = 0; i < 1; ++i) {
       array.push({
         company: 'ولساپا',
         board_power: '1.4',
@@ -181,17 +223,18 @@ export class SignalsComponent implements OnInit, AfterViewInit {
   filterByInput($event: KeyboardEvent): void {
     const filterValue = ($event.target as HTMLInputElement).value;
     const f = filterValue.trim().toLowerCase();
-    if (f !== ''){
+    if (f !== '') {
       this.dataSource.filter = f;
     } else {
       this.dataSource.filter = 'super';
     }
   }
+
   orderData(id: string | undefined, start?: 'asc' | 'desc'): void {
-    if (id === undefined){
+    if (id === undefined) {
       return;
     }
-    if (start === undefined || start === null){
+    if (start === undefined || start === null) {
       start = 'asc';
     }
     this.lastSortColumn = id;
@@ -199,16 +242,17 @@ export class SignalsComponent implements OnInit, AfterViewInit {
     const toState = 'active';
     const disableClear = false;
 
-    matSort.sort({ id: null, start, disableClear });
-    matSort.sort({ id, start, disableClear });
+    matSort.sort({id: null, start, disableClear});
+    matSort.sort({id, start, disableClear});
 
     this.dataSource.sort = matSort;
   }
+
   filterBySignalType(): void {
-    if (!this.vipSignal && !this.strongSignal && !this.superSignal){
+    if (!this.vipSignal && !this.strongSignal && !this.superSignal) {
       this.superSignal = true;
     }
-    if (this.inputFilter.trim().toLowerCase() !== ''){
+    if (this.inputFilter.trim().toLowerCase() !== '') {
       this.dataSource.filter = this.inputFilter.trim().toLowerCase();
     } else {
       this.dataSource.filter = 'super';

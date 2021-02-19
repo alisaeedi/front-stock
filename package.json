@@ -24,6 +24,7 @@
     "angular-highcharts": "^11.2.1",
     "highcharts": "^8.2.2",
     "highcharts-angular": "^2.9.0",
+    "moment": "^2.29.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
